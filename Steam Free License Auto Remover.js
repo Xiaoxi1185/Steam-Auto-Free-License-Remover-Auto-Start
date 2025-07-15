@@ -6,6 +6,7 @@
 // @author       PeiqiLi
 // @match        https://store.steampowered.com/account/licenses/
 // @grant        none
+// @license      MIT
 // ==/UserScript==
 
 (function() {
@@ -14,7 +15,7 @@
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
-            console.warn('找不到元素，请检查是否位于https://store.steampowered.com/account/licenses/');
+            console.warn('找不到元素，请检查是否位于 https://store.steampowered.com/account/licenses/');
             return;
         }
 
@@ -38,7 +39,6 @@
         statusDiv.style.whiteSpace = 'pre-wrap';
         statusDiv.style.backgroundColor = '#FFD700';
         statusDiv.style.color = '#000';
-
 
         btn.addEventListener('click', () => {
             btn.disabled = true;
@@ -99,10 +99,18 @@
             }
 
             const data = await response.json();
-            if (data.success) {
+            if (data.success === 1) {
                 return { success: true };
             } else {
-                return { success: false, error: `返回错误代码: ${data.success}` };
+                let msg = `返回错误代码: ${data.success}`;
+                if (data.success === 2) {
+                    msg += '（操作受限，可能触发了限速，请稍后重试）';
+                } else if (data.success === 84) {
+                    msg += '（Steam 拒绝请求，可能限流或请求无效）';
+                } else if (data.success === 24) {
+                    msg += '（会话已失效，请重新登录）';
+                }
+                return { success: false, error: msg };
             }
         } catch (e) {
             return { success: false, error: e.message };
@@ -128,11 +136,10 @@
             const remainingCount = total - i;
             const remainingTimeMs = remainingCount * intervalMs;
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
-            const remainingSeconds = Math.floor((remainingTimeMs % 60000) / 1000);
 
             statusDiv.textContent += `🗑️ 正在删除第 ${i + 1} 个游戏：${g.itemName} (包ID: ${g.packageId})\n`;
             statusDiv.textContent += `进度：${i} / ${total} (${percent}%)\n`;
-            statusDiv.textContent += `预计剩余时间：${remainingMinutes} min \n`;
+            statusDiv.textContent += `预计剩余时间：${remainingMinutes} 分钟\n`;
 
             const result = await removeGame(g.packageId);
 
@@ -145,7 +152,7 @@
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total - 1) {
-                statusDiv.textContent += `⏳ 等待 3 min 后继续...\n\n`;
+                statusDiv.textContent += `⏳ 等待 3 分钟后继续...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(intervalMs);
             }
