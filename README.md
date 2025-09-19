@@ -12,7 +12,7 @@
 
 This script helps you clean up your Steam inventory by removing all free licenses with one click. It will not affect games you have purchased.  
 To avoid triggering Steam rate limits, the deletion interval defaults to 5 minutes and is not recommended to shorten.  
-Deleted licenses can usually be re-added through the store page, but some removed games may no longer be available.  
+Deleted licenses can usually be re-added through the store page, but some removed games may no longer be available in store.  
 Please confirm before deleting. Use at your own risk; the author is not responsible for any loss caused by this script.
 
 ---
