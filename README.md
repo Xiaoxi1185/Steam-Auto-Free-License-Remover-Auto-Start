@@ -6,12 +6,12 @@
 ## 简介 | Description
 
 本脚本用于清理 Steam 库存，支持一键删除所有免费添加的游戏许可，不会影响已购买的游戏。  
-为避免触发 Steam 限速，默认删除操作间隔为 3 分钟，建议勿随意缩短。  
+为避免触发 Steam 限速，默认删除操作间隔约为 5 分钟，建议勿随意缩短。  
 删除的游戏许可通常可通过商店页面重新添加，但部分已下架游戏可能无法恢复。  
 请在使用前确认是否确实需要删除。使用本脚本存在一定风险，操作即视为已了解并接受风险，因脚本导致的任何损失，作者概不负责。
 
 This script helps you clean up your Steam inventory by removing all free licenses with one click. It will not affect games you have purchased.  
-To avoid triggering Steam rate limits, the deletion interval defaults to 3 minutes and is not recommended to shorten.  
+To avoid triggering Steam rate limits, the deletion interval defaults to 5 minutes and is not recommended to shorten.  
 Deleted licenses can usually be re-added through the store page, but some removed games may no longer be available.  
 Please confirm before deleting. Use at your own risk; the author is not responsible for any loss caused by this script.
 
