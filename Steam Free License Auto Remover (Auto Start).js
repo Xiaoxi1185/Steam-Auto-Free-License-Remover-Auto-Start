@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         STEAM 一键清库存 Steam Free License Auto Remover (Auto Start)
 // @namespace    https://github.com/Xiaoxi1185
-// @version      2.1
+// @version      2.1.1
 // @description  自动启动，删除失败自动跳过，无可删除游戏时自动刷新
 // @author       PeiqiLi + Claude Sonnet 4.5
 // @match        https://store.steampowered.com/account/licenses/
