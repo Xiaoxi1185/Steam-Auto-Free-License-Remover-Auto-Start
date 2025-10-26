@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         STEAM 一键清库存 Steam Free License Auto Remover
+// @name         STEAM 一键清库存 Steam Free License Auto Remover (Auto Start)
 // @namespace    https://github.com/PeiqiLi-Github
-// @version      2.0
-// @description  改进：首次随机约1秒删除，触发84后改3~5分钟随机删除，失败重试，剩余时间更准确
-// @author       PeiqiLi + 
+// @version      2.1
+// @description  自动启动，删除失败自动跳过，无可删除游戏时自动刷新
+// @author       PeiqiLi + Claude Sonnet 4.5
 // @match        https://store.steampowered.com/account/licenses/
 // @grant        none
 // @license      MIT
@@ -51,6 +51,9 @@
 
         titleElem.parentNode.insertBefore(btn, titleElem.nextSibling);
         titleElem.parentNode.insertBefore(statusDiv, btn.nextSibling);
+
+        // 自动启动清理
+        btn.click();
     }
 
     function sleep(ms) {
@@ -126,49 +129,59 @@
         const total = games.length;
 
         if (total === 0) {
-            statusDiv.textContent = '✅ 没有找到可删除的游戏。';
+            statusDiv.textContent = '✅ 没有找到可删除的游戏。\n🔄 5秒后自动刷新页面...\n';
+            await sleep(5000);
+            location.reload();
             return;
         }
 
-        let hasError84 = false; 
+        let hasError84 = false;
+        let successCount = 0;
+        let failCount = 0;
 
         statusDiv.textContent += `🚀 开始自动删除可删除游戏...\n共找到 ${total} 个可删除游戏\n\n`;
 
-        for (let i = 0; i < total; ) { 
+        for (let i = 0; i < total; i++) {
             const g = games[i];
             const remainingCount = total - i;
 
-     
-            const avgDelay = hasError84 ? 420000 : 1000;; 
+            const avgDelay = hasError84 ? 420000 : 1000;
             const remainingTimeMs = remainingCount * avgDelay;
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
 
             statusDiv.textContent += `🗑️ 正在删除第 ${i + 1} 个游戏：${g.itemName} (包ID: ${g.packageId})\n`;
-            statusDiv.textContent += `进度：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
+            statusDiv.textContent += `进度：${i + 1} / ${total} (${(((i + 1) / total)*100).toFixed(2)}%)\n`;
+            statusDiv.textContent += `成功：${successCount} | 失败：${failCount}\n`;
             statusDiv.textContent += `预计剩余时间：${remainingMinutes} 分钟 ≈ ${remainingDays} 天\n`;
 
             const result = await removeGame(g.packageId);
 
             if (result.success) {
                 statusDiv.textContent += `✅ 删除成功\n\n`;
-                i++;  
+                successCount++;
             } else {
-                statusDiv.textContent += `❌ 删除失败，原因：${result.error}\n\n`;
-                if (result.code === 84) {
+                statusDiv.textContent += `❌ 删除失败，原因：${result.error}\n`;
+                statusDiv。textContent += `⏭️ 跳过该游戏，继续下一个...\n\n`;
+                failCount++;
+                if (result。code === 84) {
                     hasError84 = true;
                 }
             }
 
-            statusDiv.scrollTop = statusDiv.scrollHeight;
+            statusDiv。scrollTop = statusDiv。scrollHeight;
 
-            if (i < total) {
-                const delay = hasError84 ? randomDelay(360000, 480000) : randomDelay(500, 1500);
-                statusDiv.textContent += `⏳ 等待 ${Math.floor(delay/1000)} 秒后继续...\n\n`;
-                statusDiv.scrollTop = statusDiv.scrollHeight;
+            // 只有成功删除时才等待，失败则立即继续
+            if (result.success && i < total - 1) {
+                const delay = hasError84 ? randomDelay(360000， 480000) : randomDelay(500, 1500);
+                statusDiv.textContent += `⏳ 等待 ${Math。floor(delay/1000)} 秒后继续...\n\n`;
+                statusDiv.scrollTop = statusDiv。scrollHeight;
                 await sleep(delay);
             }
         }
+
+        statusDiv。textContent += `\n📊 统计信息：\n`;
+        statusDiv.textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
     }
 
     function waitForPage() {
