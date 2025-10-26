@@ -73,7 +73,7 @@
             'Addon', 'addon',
             'Pack', 'pack',
             'Season Pass', 'season pass',
-            '扩展包', '内容', '额外', '外观', '追加',
+            '扩展包', '内容', '额外', '外观', '追加', '-',
         ];
 
         const nameHasDLC = dlcKeywords.some(keyword => itemName.includes(keyword));
