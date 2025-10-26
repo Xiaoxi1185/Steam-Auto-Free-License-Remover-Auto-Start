@@ -1,6 +1,16 @@
 # Steam Free License Auto Remover  
 （Steam 一键清库存）
 
+## 主要修改内容：
+1. 自动启动
+2. 删除失败自动跳过
+添加成功/失败计数统计
+3. 无游戏时等待 5 秒后自动刷新页面
+4. 实时显示成功/失败数量
+更准确的进度百分比计算
+最后显示统计汇总信息
+## 由Claude Sonnet 4.5修改
+
 ---
 
 ## 简介 | Description
@@ -11,7 +21,7 @@
 请在使用前确认是否确实需要删除。使用本脚本存在一定风险，操作即视为已了解并接受风险，因脚本导致的任何损失，作者概不负责。
 
 This script helps you clean up your Steam inventory by removing all free licenses with one click. It will not affect games you have purchased.  
-To avoid triggering Steam rate limits, the deletion interval defaults to 5 minutes and is not recommended to shorten.  
+To avoid triggering Steam rate limits, the deletion interval defaults to 5 分钟之前 and is not recommended to shorten.  
 Deleted licenses can usually be re-added through the store page, but some removed games may no longer be available in store.  
 Please confirm before deleting. Use at your own risk; the author is not responsible for any loss caused by this script.
 
