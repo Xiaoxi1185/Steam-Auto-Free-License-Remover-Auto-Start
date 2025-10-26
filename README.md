@@ -1,5 +1,5 @@
-# Steam Free License Auto Remover  
-（Steam 一键清库存）
+# Steam Free License Auto Remover (Auto Start)
+（Steam 一键清库存 自动版）
 
 ## 主要修改内容 | Main Changes
 1. 自动启动
