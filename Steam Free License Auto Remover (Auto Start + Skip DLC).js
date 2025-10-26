@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         STEAM 一键清库存 Steam Free License Auto Remover (Auto Start)
+// @name         STEAM 一键清库存 Steam Free License Auto Remover (Auto Start + Skip DLC)
 // @namespace    https://github.com/Xiaoxi1185
-// @version      2.1
-// @description  自动启动，删除失败自动跳过，无可删除游戏时自动刷新
+// @version      2.2.1
+// @description  自动启动，删除失败自动跳过，跳过DLC，无可删除游戏时自动刷新
 // @author       PeiqiLi + Claude Sonnet 4.5
 // @match        https://store.steampowered.com/account/licenses/
 // @grant        none
@@ -64,9 +64,27 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function isDLC(itemName, rowElement) {
+        // 检查名称中是否包含 DLC 相关关键词
+        const dlcKeywords = [
+            'DLC', 'Dlc', 'dlc',
+            'Content', 'content',
+            'Expansion', 'expansion',
+            'Addon', 'addon',
+            'Pack', 'pack',
+            'Season Pass', 'season pass',
+            '扩展包', '内容', '额外', '外观', '追加',
+        ];
+
+        const nameHasDLC = dlcKeywords.some(keyword => itemName.includes(keyword));
+
+        return nameHasDLC;
+    }
+
     function scanRemovableGames() {
         const rows = document.querySelectorAll('.account_table tr');
         const games = [];
+        const skippedDLCs = [];
 
         rows.forEach(row => {
             const removeLink = row.querySelector('a[href^="javascript:RemoveFreeLicense"]');
@@ -79,16 +97,24 @@
                 const packageId = match ? match[1] : null;
 
                 if (packageId) {
-                    games.push({
-                        packageId,
-                        itemName,
-                        removeLink
-                    });
+                    // 检查是否为 DLC
+                    if (isDLC(itemName, row)) {
+                        skippedDLCs.push({
+                            packageId,
+                            itemName
+                        });
+                    } else {
+                        games.push({
+                            packageId,
+                            itemName,
+                            removeLink
+                        });
+                    }
                 }
             }
         });
 
-        return games;
+        return { games, skippedDLCs };
     }
 
     async function removeGame(packageId) {
@@ -125,11 +151,28 @@
     }
 
     async function startCleaning(statusDiv) {
-        const games = scanRemovableGames();
+        const { games, skippedDLCs } = scanRemovableGames();
         const total = games.length;
 
+        statusDiv.textContent += `🔍 扫描完成：\n`;
+        statusDiv.textContent += `可删除游戏：${total} 个\n`;
+        statusDiv.textContent += `🛡️ 跳过DLC：${skippedDLCs.length} 个\n\n`;
+
+        if (skippedDLCs.length > 0) {
+            statusDiv.textContent += `已跳过以下DLC：\n`;
+            skippedDLCs.forEach((dlc, index) => {
+                if (index < 5) {
+                    statusDiv.textContent += `  - ${dlc.itemName}\n`;
+                }
+            });
+            if (skippedDLCs.length > 5) {
+                statusDiv.textContent += `  ... 还有 ${skippedDLCs.length - 5} 个DLC\n`;
+            }
+            statusDiv.textContent += `\n`;
+        }
+
         if (total === 0) {
-            statusDiv.textContent = '✅ 没有找到可删除的游戏。\n🔄 5秒后自动刷新页面...\n';
+            statusDiv.textContent += '✅ 没有找到可删除的游戏（非DLC）。\n🔄 5秒后自动刷新页面...\n';
             await sleep(5000);
             location.reload();
             return;
@@ -139,7 +182,7 @@
         let successCount = 0;
         let failCount = 0;
 
-        statusDiv.textContent += `🚀 开始自动删除可删除游戏...\n共找到 ${total} 个可删除游戏\n\n`;
+        statusDiv.textContent += `🚀 开始自动删除游戏...\n\n`;
 
         for (let i = 0; i < total; i++) {
             const g = games[i];
@@ -161,10 +204,10 @@
                 statusDiv.textContent += `✅ 删除成功\n\n`;
                 successCount++;
             } else {
-                statusDiv.textContent += `❌ 删除失败，原因：${result.error}\n`;
+                statusDiv。textContent += `❌ 删除失败，原因：${result。error}\n`;
                 statusDiv.textContent += `⏭️ 跳过该游戏，继续下一个...\n\n`;
                 failCount++;
-                if (result.code === 84) {
+                if (result。code === 84) {
                     hasError84 = true;
                 }
             }
@@ -173,15 +216,16 @@
 
             // 只有成功删除时才等待，失败则立即继续
             if (result.success && i < total - 1) {
-                const delay = hasError84 ? randomDelay(360000, 480000) : randomDelay(500, 1500);
-                statusDiv.textContent += `⏳ 等待 ${Math.floor(delay/1000)} 秒后继续...\n\n`;
-                statusDiv.scrollTop = statusDiv.scrollHeight;
+                const delay = hasError84 ? randomDelay(360000， 480000) : randomDelay(500, 1500);
+                statusDiv.textContent += `⏳ 等待 ${Math。floor(delay/1000)} 秒后继续...\n\n`;
+                statusDiv.scrollTop = statusDiv。scrollHeight;
                 await sleep(delay);
             }
         }
 
         statusDiv.textContent += `\n📊 统计信息：\n`;
-        statusDiv.textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
+        statusDiv。textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
+        statusDiv.textContent += `🛡️ 保护的DLC：${skippedDLCs。length} 个\n`;
     }
 
     function waitForPage() {
