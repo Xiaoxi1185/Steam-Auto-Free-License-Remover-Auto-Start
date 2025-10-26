@@ -1,7 +1,7 @@
 # Steam Free License Auto Remover  
 （Steam 一键清库存）
 
-## 主要修改内容：
+## 主要修改内容 | Main Changes
 1. 自动启动
 2. 删除失败自动跳过
 添加成功/失败计数统计
@@ -9,9 +9,9 @@
 4. 实时显示成功/失败数量
 更准确的进度百分比计算
 最后显示统计汇总信息
-## 由Claude Sonnet 4.5修改
 
-## Main Changes:
+**由Claude Sonnet 4.5 修改**
+
 1. Automatic startup
 2. Automatically skip if deletion fails
 Added success/failure count statistics
@@ -19,7 +19,8 @@ Added success/failure count statistics
 5. Real-time display of success/failure
 counts More accurate progress percentage calculation
 Display summary statistics at the end
-## Modified by Claude Sonnet 4.5
+
+**Modified by Claude Sonnet 4.5**
 
 ---
 
