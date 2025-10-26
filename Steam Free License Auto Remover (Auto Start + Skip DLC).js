@@ -65,12 +65,12 @@
     }
 
     function isDLC(itemName, rowElement) {
-        // 方法1: 检查名称中是否包含 DLC 相关关键词
+        // 检查名称中是否包含 DLC 相关关键词
         const dlcKeywords = [
             'DLC', 'Dlc', 'dlc',
             'Content', 'content',
             'Expansion', 'expansion',
-            'Add-on', 'Add-On', 'Addon',
+            '-' ,'Addon',
             'Pack', 'pack',
             'Season Pass', 'season pass',
             '扩展包', '内容', '额外', '外观', '追加',
@@ -78,28 +78,7 @@
 
         const nameHasDLC = dlcKeywords.some(keyword => itemName.includes(keyword));
 
-        // 方法2: 检查包类型 (Steam 的许可证类型)
-        // 有些 DLC 会在表格的第三列显示类型信息
-        const cells = rowElement.querySelectorAll('td');
-        let typeHasDLC = false;
-
-        if (cells.length > 2) {
-            const typeText = cells[2].textContent.trim().toLowerCase();
-            typeHasDLC = typeText.includes('dlc') ||
-                        typeText.includes('downloadable content') ||
-                        typeText.includes('expansion');
-        }
-
-        // 方法3: 检查是否有 Steam 的 DLC 类型标识
-        const packageInfo = rowElement.querySelector('.package_contents');
-        let packageHasDLC = false;
-        if (packageInfo) {
-            const packageText = packageInfo.textContent.toLowerCase();
-            packageHasDLC = packageText.includes('dlc') ||
-                           packageText.includes('downloadable content');
-        }
-
-        return nameHasDLC || typeHasDLC || packageHasDLC;
+        return nameHasDLC;
     }
 
     function scanRemovableGames() {
@@ -225,10 +204,10 @@
                 statusDiv.textContent += `✅ 删除成功\n\n`;
                 successCount++;
             } else {
-                statusDiv.textContent += `❌ 删除失败，原因：${result.error}\n`;
+                statusDiv。textContent += `❌ 删除失败，原因：${result。error}\n`;
                 statusDiv.textContent += `⏭️ 跳过该游戏，继续下一个...\n\n`;
                 failCount++;
-                if (result.code === 84) {
+                if (result。code === 84) {
                     hasError84 = true;
                 }
             }
@@ -237,16 +216,16 @@
 
             // 只有成功删除时才等待，失败则立即继续
             if (result.success && i < total - 1) {
-                const delay = hasError84 ? randomDelay(360000, 480000) : randomDelay(500, 1500);
-                statusDiv.textContent += `⏳ 等待 ${Math.floor(delay/1000)} 秒后继续...\n\n`;
-                statusDiv.scrollTop = statusDiv.scrollHeight;
+                const delay = hasError84 ? randomDelay(360000， 480000) : randomDelay(500, 1500);
+                statusDiv.textContent += `⏳ 等待 ${Math。floor(delay/1000)} 秒后继续...\n\n`;
+                statusDiv.scrollTop = statusDiv。scrollHeight;
                 await sleep(delay);
             }
         }
 
         statusDiv.textContent += `\n📊 统计信息：\n`;
-        statusDiv.textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
-        statusDiv.textContent += `🛡️ 保护的DLC：${skippedDLCs.length} 个\n`;
+        statusDiv。textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
+        statusDiv.textContent += `🛡️ 保护的DLC：${skippedDLCs。length} 个\n`;
     }
 
     function waitForPage() {
