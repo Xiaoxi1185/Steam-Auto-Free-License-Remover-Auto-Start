@@ -15,7 +15,7 @@
 1. Automatic startup
 2. Automatically skip if deletion fails
 Added success/failure count statistics
-4. Wait 5 秒之前 and automatically refresh the page when there is no game
+4. Wait 5 seconds and automatically refresh the page when there is no game
 5. Real-time display of success/failure
 counts More accurate progress percentage calculation
 Display summary statistics at the end
