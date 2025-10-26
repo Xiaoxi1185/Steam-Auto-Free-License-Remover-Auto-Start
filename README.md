@@ -9,16 +9,18 @@
 4. 实时显示成功/失败数量
 更准确的进度百分比计算
 最后显示统计汇总信息
+5. 根据名称和Sub（不一定有效）跳过删除DLC（可选）
 
 **由Claude Sonnet 4.5 修改**
 
 1. Automatic startup
 2. Automatically skip if deletion fails
 Added success/failure count statistics
-4. Wait 5 seconds and automatically refresh the page when there is no game
-5. Real-time display of success/failure
+3. Wait 5 seconds and automatically refresh the page when there is no game
+4. Real-time display of success/failure
 counts More accurate progress percentage calculation
 Display summary statistics at the end
+5. Skip deleting DLC based on name and Sub (not necessarily effective) (optional)
 
 **Modified by Claude Sonnet 4.5**
 
