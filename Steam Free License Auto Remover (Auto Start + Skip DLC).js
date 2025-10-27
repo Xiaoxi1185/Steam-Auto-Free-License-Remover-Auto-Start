@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         STEAM 一键清库存 Steam Free License Auto Remover (Auto Start + Skip DLC)
 // @namespace    https://github.com/Xiaoxi1185
-// @version      3.3.0
+// @version      3.4.0
 // @description  自动启动，删除失败自动跳过，跳过DLC，无可删除游戏时自动刷新，每小时自动刷新页面，支持暂停功能
 // @author       PeiqiLi + Claude Sonnet 4.5
 // @match        https://store.steampowered.com/account/licenses/
@@ -36,6 +36,7 @@
     let isPaused = false; // 标记是否暂停清理操作
     let successCount = 0; // 成功删除计数
     let failCount = 0; // 失败删除计数
+    let autoRefreshTimer = null; // 自动刷新定时器
 
     // ==================== 工具函数 ====================
     function sleep(ms) {
@@ -44,6 +45,25 @@
 
     function randomDelay(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // 设置自动刷新定时器
+    function setupAutoRefresh() {
+        clearAutoRefresh();
+        autoRefreshTimer = setTimeout(() => {
+            console.log('自动刷新：已到1小时，刷新页面');
+            location.reload();
+        }, CONFIG.AUTO_REFRESH_INTERVAL);
+        console.log(`自动刷新已设置，将在 ${new Date(Date.now() + CONFIG.AUTO_REFRESH_INTERVAL).toLocaleString('zh-CN')} 刷新页面`);
+    }
+
+    // 清除自动刷新定时器
+    function clearAutoRefresh() {
+        if (autoRefreshTimer) {
+            clearTimeout(autoRefreshTimer);
+            autoRefreshTimer = null;
+            console.log('自动刷新定时器已清除');
+        }
     }
 
     function insertButton() {
@@ -121,6 +141,14 @@
         titleElem.parentNode.insertBefore(btnPause, btnStart.nextSibling);
         titleElem.parentNode.insertBefore(statusDiv, btnPause.nextSibling);
         titleElem.parentNode.insertBefore(refreshInfo, statusDiv.nextSibling);
+
+        // 启动自动刷新定时器
+        setupAutoRefresh();
+
+        // 页面卸载前清理定时器
+        window.addEventListener('beforeunload', () => {
+            clearAutoRefresh();
+        });
 
         // 自动启动清理
         btnStart.click();
@@ -201,6 +229,7 @@
 
         if (total === 0) {
             statusDiv.textContent += '没有找到可删除的游戏（非DLC）。\n5秒后自动刷新页面...\n';
+            clearAutoRefresh(); // 清除定时器，因为即将手动刷新
             await sleep(CONFIG.NO_GAMES_REFRESH_DELAY);
             location.reload();
             return;
@@ -242,25 +271,25 @@
             // 如果不是最后一个游戏，等待随机延迟
             if (i < total - 1) {
                 const delay = randomDelay(CONFIG.NORMAL_DELAY_RANGE.min, CONFIG.NORMAL_DELAY_RANGE.max);
-                statusDiv。textContent += `等待 ${Math。floor(delay / 1000)} 秒后继续...\n\n`;
+                statusDiv.textContent += `等待 ${Math.floor(delay / 1000)} 秒后继续...\n\n`;
                 await sleep(delay);
             }
         }
 
-        statusDiv.textContent += `\n统计信息：\n`;
-        statusDiv.textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
+        statusDiv。textContent += `\n统计信息：\n`;
+        statusDiv。textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
         statusDiv。textContent += `保护的DLC：${skippedDLCs。length} 个\n`;
-        statusDiv.textContent += `所有操作完成！\n`;
-        btnPause.disabled = true; // 禁用暂停按钮
+        statusDiv。textContent += `所有操作完成！\n`;
+        btnPause。disabled = true; // 禁用暂停按钮
     }
 
     function waitForPage() {
         return new Promise(resolve => {
-            if (document.querySelector('.page_content > h2')) {
+            if (document。querySelector('.page_content > h2')) {
                 resolve();
             } else {
                 const observer = new MutationObserver(() => {
-                    if (document。querySelector('.page_content > h2')) {
+                    if (document.querySelector('.page_content > h2')) {
                         observer.disconnect();
                         resolve();
                     }
