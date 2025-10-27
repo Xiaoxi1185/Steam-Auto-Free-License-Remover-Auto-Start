@@ -3,24 +3,20 @@
 
 ## 主要修改内容 | Main Changes
 1. 自动启动
-2. 删除失败自动跳过
-添加成功/失败计数统计
-3. 无游戏时等待 5 秒后自动刷新页面
-4. 实时显示成功/失败数量
-更准确的进度百分比计算
-最后显示统计汇总信息
-5. 根据名称跳过删除DLC（可选） 注：为避免误杀将“-”加入了列表
+2. 删除失败自动跳过，添加成功/失败计数统计
+3. 每隔1小时自动刷新，无游戏时等待 5 秒后自动刷新页面
+4. 实时显示成功/失败数量，更准确的进度百分比计算，最后显示统计汇总信息
+5. 根据名称跳过删除DLC（可选）
+6. 暂停键
 
 **由Claude Sonnet 4.5 修改**
 
-1. Automatic startup
-2. Automatically skip if deletion fails
-Added success/failure count statistics
-3. Wait 5 seconds and automatically refresh the page when there is no game
-4. Real-time display of success/failure
-counts More accurate progress percentage calculation
-Display summary statistics at the end
+1. Auto-start
+2. Automatically skip failed deletions, add success/failure count statistics
+3. Automatically refresh every hour, wait 5 seconds and then refresh the page if no game is present
+4. Display real-time success/failure counts, more accurate progress percentage calculation, and show final summary information
 5. Skip deleting DLC based on name (optional)
+6. Pause button
 
 **Modified by Claude Sonnet 4.5**
 
