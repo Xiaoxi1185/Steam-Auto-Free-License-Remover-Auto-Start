@@ -276,16 +276,16 @@
             }
         }
 
-        statusDiv。textContent += `\n统计信息：\n`;
-        statusDiv。textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
-        statusDiv。textContent += `保护的DLC：${skippedDLCs。length} 个\n`;
-        statusDiv。textContent += `所有操作完成！\n`;
-        btnPause。disabled = true; // 禁用暂停按钮
+        statusDiv.textContent += `\n统计信息：\n`;
+        statusDiv.textContent += `总计：${total} | 成功：${successCount} | 失败：${failCount}\n`;
+        statusDiv.textContent += `保护的DLC：${skippedDLCs.length} 个\n`;
+        statusDiv.textContent += `所有操作完成！\n`;
+        btnPause.disabled = true; // 禁用暂停按钮
     }
 
     function waitForPage() {
         return new Promise(resolve => {
-            if (document。querySelector('.page_content > h2')) {
+            if (document.querySelector('.page_content > h2')) {
                 resolve();
             } else {
                 const observer = new MutationObserver(() => {
